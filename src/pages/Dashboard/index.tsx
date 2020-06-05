@@ -35,8 +35,6 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     async function loadTransactions(): Promise<void> {
-      console.log('loadTransactions');
-
       const { data } = await api.get('/transactions');
 
       setTransactions(data.transactions);
@@ -80,33 +78,34 @@ const Dashboard: React.FC = () => {
           </CardContainer>
         )}
 
-        <TableContainer>
-          <table>
-            <thead>
-              <tr>
-                <th>Título</th>
-                <th>Preço</th>
-                <th>Categoria</th>
-                <th>Data</th>
-              </tr>
-            </thead>
+        {transactions && (
+          <TableContainer>
+            <table>
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Preço</th>
+                  <th>Categoria</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
 
-            <tbody>
-              <tr>
-                <td className="title">Computer</td>
-                <td className="income">R$ 5.000,00</td>
-                <td>Sell</td>
-                <td>20/04/2020</td>
-              </tr>
-              <tr>
-                <td className="title">Website Hosting</td>
-                <td className="outcome">- R$ 1.000,00</td>
-                <td>Hosting</td>
-                <td>19/04/2020</td>
-              </tr>
-            </tbody>
-          </table>
-        </TableContainer>
+              <tbody>
+                {transactions.map(transaction => (
+                  <tr key={transaction.id}>
+                    <td className="title">{transaction.title}</td>
+                    <td className={transaction.type}>
+                      {transaction.type === 'outcome' && '- '}
+                      {formatValue(transaction.value)}
+                    </td>
+                    <td>{transaction.category.title}</td>
+                    <td>20/04/2020</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableContainer>
+        )}
       </Container>
     </>
   );
